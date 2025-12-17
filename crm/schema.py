@@ -187,7 +187,8 @@ class CreateOrder(graphene.Mutation):
             order=order,
             message = "Order created successfully"
         )
-        
+ 
+ # register mutations on root mutation for graphql to expose       
 class Mutation(graphene.ObjectType):
     create_customer = CreateCustomer.Field()
     bulk_create_customers = BulkCreateCustomers.Field()

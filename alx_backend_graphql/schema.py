@@ -1,6 +1,6 @@
 # Define GraphQL schema
 import graphene
-from crm.schema import Query as CRMQuery
+from crm.schema import Query as CRMQuery, Mutation as CRMMutations
 
 class Query(CRMQuery, graphene.ObjectType):
     # Declare single string field
@@ -9,4 +9,8 @@ class Query(CRMQuery, graphene.ObjectType):
     # String should return a default value "Hello, GraphQL!"
     hello = graphene.String(default_value="Hello, GraphQL!")
     
-schema = graphene.Schema(query=Query)
+
+class Mutation(CRMMutation, graphene.ObjectType):
+    pass
+    
+schema = graphene.Schema(query=Query, mutation=Mutation)
