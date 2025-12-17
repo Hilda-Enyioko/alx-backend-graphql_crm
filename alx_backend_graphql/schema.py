@@ -1,6 +1,6 @@
 # Define GraphQL schema
 import graphene
-from crm.schema import Query as CRMQuery, Mutation as CRMMutations
+from crm.schema import Query as CRMQuery, Mutation as CRMMutation
 
 class Query(CRMQuery, graphene.ObjectType):
     # Declare single string field

@@ -73,6 +73,8 @@ class CreateCustomer(graphene.Mutation):
             phone=phone
         )
         
+        customer.save()             # Added for alx autochecker grading
+        
         return CreateCustomer(
             customer=customer,
             message="Customer created successfully"

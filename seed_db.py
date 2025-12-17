@@ -1,7 +1,7 @@
 import django
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "graphql_crm.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alx_backend_graphql.settings")
 django.setup()
 
 from crm.models import Customer, Product
