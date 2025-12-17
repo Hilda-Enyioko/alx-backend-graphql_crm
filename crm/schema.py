@@ -3,25 +3,30 @@ import graphene
 from graphene_django import DjangoObjectType
 from django.db import transaction
 from django.utils import timezone
-
+from graphene_django.filter import DjangoFilterConnectionField
+from .filters import CustomerFilter, ProductFilter, OrderFilter
 from .models import Customer, Product, Order
 
 
 # Create GraphQL objecttypes for safe querying
+# Add Relay’s Node required for DjangoFilterConnectionField.
 class CustomerType(DjangoObjectType):
     class Meta:
         model = Customer
-        fields = "__all__"
+        interfaces = (graphene.relay.Node,)
+        filterset_class = CustomerFilter
         
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
-        fields = "__all__"
+        interfaces = (graphene.relay.Node,)
+        filterset_class = ProductFilter
         
 class OrderType(DjangoObjectType):
     class Meta:
         model = Order
-        fields = "__all__"
+        interfaces = (graphene.relay.Node,)
+        filterset_class = OrderFilter
         
 
 # Basic Query to determine the data that can be read from the GraphQL endpoint
@@ -32,6 +37,11 @@ class Query(graphene.ObjectType):
     products = graphene.List(ProductType)
     orders = graphene.List(OrderType)
     
+    # Add all django filter connection fields
+    all_customers = DjangoFilterConnectionField(CustomerType)
+    all_products = DjangoFilterConnectionField(ProductType, order_by=graphene.String())
+    all_orders = DjangoFilterConnectionField(OrderType, order_by=graphene.String())
+    
     # Next, we use resolvers tell GraphQL where to get this data from
     def resolve_customers(root, info):
         return Customer.objects.all()
@@ -41,6 +51,19 @@ class Query(graphene.ObjectType):
     
     def resolve_orders(root, info):
         return Order.object.all()
+    
+    # Add resolvers for django filter connection fields
+    def resolve_all_products(root, info, order_by=None, **kwargs):
+        qs = Product.objects.all()
+        if order_by:
+            qs = qs.order_by(order_by)
+        return qs
+
+    def resolve_all_orders(root, info, order_by=None, **kwargs):
+        qs = Order.objects.all()
+        if order_by:
+            qs = qs.order_by(order_by)
+        return qs
     
 
 # Add mutations that allow PUT/POST/PATCH/DELETE actions on datasets
