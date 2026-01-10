@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 # 1. Use Django's manage.py to execute a python command 
 # that deletes customers with no orders since a year ago
