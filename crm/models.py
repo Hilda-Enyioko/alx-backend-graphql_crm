@@ -20,10 +20,16 @@ class Product(models.Model):
     
 
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('cancelled', 'Cancelled'),
+        ('completed', 'Completed')
+    ]
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     order_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(choices=STATUS_CHOICES, default="pending")
 
     def __str__(self):
         return f"Order #{self.id}"
