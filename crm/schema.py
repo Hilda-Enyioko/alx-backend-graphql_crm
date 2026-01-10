@@ -5,7 +5,7 @@ from django.db import transaction
 from django.utils import timezone
 from graphene_django.filter import DjangoFilterConnectionField
 from .filters import CustomerFilter, ProductFilter, OrderFilter
-from .models import Customer, Product, Order
+from crm.models import Customer, Product, Order
 
 
 # Create GraphQL objecttypes for safe querying
