@@ -213,9 +213,38 @@ class CreateOrder(graphene.Mutation):
             message = "Order created successfully"
         )
  
- # register mutations on root mutation for graphql to expose       
+ 
+# add mutations that updates low-stock products (stock < 10), and logs the updates.
+class UpdateLowStockProducts(graphene.Mutation):
+    product = graphene.List(ProductType)
+    message = graphene.String()
+    success = graphene.Boolean()
+    
+    class Arguments:
+        pass
+    
+    def mutate(root, info):
+        low_stock_products = Product.objects.filter(stock__lt=10)
+        updated_list = []
+
+        for product in low_stock_products:
+            product.stock += 10  # restock
+            product.save()
+            updated_list.append(product)
+
+        success = True
+        msg = f"{len(updated_list)} products updated successfully"
+
+        return UpdateLowStockProducts(
+            success=success,
+            updated_products=updated_list,
+            message=msg
+        )
+ 
+# register mutations on root mutation for graphql to expose       
 class Mutation(graphene.ObjectType):
     create_customer = CreateCustomer.Field()
     bulk_create_customers = BulkCreateCustomers.Field()
     create_product = CreateProduct.Field()
     create_order = CreateOrder.Field()
+    update_lowstock_products = UpdateLowStockProducts.Field()
