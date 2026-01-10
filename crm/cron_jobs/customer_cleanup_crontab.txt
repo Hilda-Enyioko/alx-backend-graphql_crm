@@ -1,0 +1,1 @@
+02**0/c/Users/Hilda/OneDrive/Documents/Projects/alx-backend-graphql_crm/crm/cron_jobs/clean_inactive_customers.sh
