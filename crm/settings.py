@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'django_filters',
     'rest_framework',
-    'django-crontab',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [

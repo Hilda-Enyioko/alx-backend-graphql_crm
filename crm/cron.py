@@ -2,6 +2,8 @@ from django_crontab import crontab
 from datetime import datetime
 import logging
 import requests
+from gql import gql, Client
+from gql.transport.requests import RequestsHTTPTransport
 
 logging.basicConfig(level=logging.INFO)
 
@@ -14,19 +16,25 @@ def log_crm_heartbeat():
         
     logging.info(message.strip())
     
-    # Check GraphQL endpoint
+    
+    # Use gql to query the hello field
     try:
-        graphql_url = "http://localhost:8000/graphql"
-        query ='{hello}'
+        transport = RequestsHTTPTransport(
+            url="http://localhost:8000/graphql",
+            verify=True,
+            retries=3
+        )
+        client = Client(transport=transport, fetch_schema_from_transport=False)
+        query = gql("{ hello }")
+        result = client.execute(query)
         
-        response = requests.post(graphql_url, 
-                                 json={'query': query},
-                                 timeout=5)
-        
-        if response.status_code == 200:
+        if "hello" in result:
             logging.info("GraphQL endpoint responsive")
         else:
-            logging.warning(f"GraphQL endpoint returned status {response.status_code}")
-            
+            logging.warning("GraphQL endpoint did not return 'hello'")
     except Exception as e:
         logging.error(f"Error contacting GraphQL endpoint: {e}")
+
+
+if __name__ == "__main__":
+    log_crm_heartbeat()
